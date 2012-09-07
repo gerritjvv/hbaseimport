@@ -3,7 +3,6 @@
 # Executes the HBaseImport client
 #!/usr/bin/env bash
 
-
 abspath=$(cd ${0%/*} && echo $PWD/${0##*/})
 BIN_HOME=`dirname $abspath`
 
