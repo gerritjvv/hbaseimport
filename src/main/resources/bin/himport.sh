@@ -37,7 +37,7 @@ CLASSPATH=${CLASSPATH}:$JAVA_HOME/lib/tools.jar
 
 
 # add libs to CLASSPATH.
-CLASSPATH="${CLASSPATH}:$HOME/lib/*"
+CLASSPATH="${CLASSPATH}:$HOME/lib/*:$HOME"
 
 CLASS="org.hbase.himport.job.PigHBaseImport"
 
