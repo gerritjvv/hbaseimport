@@ -44,11 +44,10 @@ public class PigHBaseImport {
 			conf.set("job.priority", "LOW");
 			conf.set("mapred.job.priority", "LOW");
 			conf.set("mapreduce.job.priority", "LOW");
-			
+
 			Job job = createSubmittableJob(conf, otherArgs);
-			
-			System.exit(job
-					.waitForCompletion(true) ? 0 : 1);
+
+			System.exit(job.waitForCompletion(true) ? 0 : 1);
 		}
 
 	}
@@ -67,7 +66,7 @@ public class PigHBaseImport {
 		conf.set(PigHBaseImportMapper.TABLE_NAME, tableName);
 
 		Job job = new Job(conf, "Import " + jobName);
-		
+
 		// set job for mapper = HBaseImportMapper, MapOutput=ImmutableBytes,Put,
 		// Reducer=PutSortReducer, File Input=TextInputFormat
 		job.setJarByClass(PigHBaseImportMapper.class);
