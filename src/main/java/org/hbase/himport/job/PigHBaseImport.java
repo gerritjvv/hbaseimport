@@ -15,7 +15,7 @@ import org.apache.hadoop.mapreduce.Job;
 import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.GenericOptionsParser;
-import org.apache.pig.impl.io.BinStorageInputFormat;
+import org.apache.pig.backend.hadoop.executionengine.mapReduceLayer.PigTextInputFormat;
 
 import com.google.common.primitives.Longs;
 
@@ -71,7 +71,8 @@ public class PigHBaseImport {
 		// Reducer=PutSortReducer, File Input=TextInputFormat
 		job.setJarByClass(PigHBaseImportMapper.class);
 		FileInputFormat.setInputPaths(job, input);
-		job.setInputFormatClass(BinStorageInputFormat.class);
+		job.setInputFormatClass(PigTextInputFormat.class);
+//		job.setInputFormatClass(BinStorageInputFormat.class);
 		job.setMapperClass(PigHBaseImportMapper.class);
 		job.setReducerClass(PutSortReducer.class);
 		FileOutputFormat.setOutputPath(job, output);
