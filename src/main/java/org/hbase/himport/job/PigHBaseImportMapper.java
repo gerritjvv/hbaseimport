@@ -3,11 +3,9 @@ package org.hbase.himport.job;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
-import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.pig.data.Tuple;
@@ -20,7 +18,7 @@ import org.hbase.himport.job.HBaseImport.Column;
  * 
  */
 public class PigHBaseImportMapper extends
-		Mapper<Writable, Text, ImmutableBytesWritable, Put> {
+		Mapper<Writable, Tuple, ImmutableBytesWritable, Put> {
 
 	enum ERROR {
 		BAD_LINE, BAD_VALUE, BAD_TYPE, EMPTY_KEY
@@ -54,10 +52,10 @@ public class PigHBaseImportMapper extends
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	protected void map(Writable key, Text txt,
+	protected void map(Writable key, Tuple value,
 			org.apache.hadoop.mapreduce.Mapper.Context context)
 			throws IOException, InterruptedException {
-
+/*
 		String[] value = StringUtils.split(txt.toString(), '\t');
 		
 		final int size = value.length;
@@ -107,7 +105,7 @@ public class PigHBaseImportMapper extends
 			}
 
 			context.write(rowKey, put);
-		/*
+			*/
 		final int size = value.size();
 
 		// key is not part of the columns but in the line.
@@ -155,7 +153,6 @@ public class PigHBaseImportMapper extends
 			}
 
 			context.write(rowKey, put);
-*/
 		
 		}
 
