@@ -3,9 +3,11 @@ package org.hbase.himport.job;
 import java.io.IOException;
 import java.util.regex.Pattern;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.hbase.client.Put;
 import org.apache.hadoop.hbase.io.ImmutableBytesWritable;
 import org.apache.hadoop.hbase.util.Bytes;
+import org.apache.hadoop.io.Text;
 import org.apache.hadoop.io.Writable;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.pig.data.Tuple;
@@ -18,7 +20,7 @@ import org.hbase.himport.job.HBaseImport.Column;
  * 
  */
 public class PigHBaseImportMapper extends
-		Mapper<Writable, Tuple, ImmutableBytesWritable, Put> {
+		Mapper<Writable, Text, ImmutableBytesWritable, Put> {
 
 	enum ERROR {
 		BAD_LINE, BAD_VALUE, BAD_TYPE, EMPTY_KEY
@@ -52,10 +54,60 @@ public class PigHBaseImportMapper extends
 
 	@SuppressWarnings({ "rawtypes", "unchecked" })
 	@Override
-	protected void map(Writable key, Tuple value,
+	protected void map(Writable key, Text txt,
 			org.apache.hadoop.mapreduce.Mapper.Context context)
 			throws IOException, InterruptedException {
 
+		String[] value = StringUtils.split(txt.toString(), '\t');
+		
+		final int size = value.length;
+
+		// key is not part of the columns but in the line.
+		if ((size - 1) != columnsLength) {
+			// notify that the line is not correct
+			context.getCounter(ERROR.BAD_LINE).increment(1);
+
+		} else {
+			// get key as bytes
+
+			final byte[] kval = keyColumn.parseString(value[0]);
+
+			final ImmutableBytesWritable rowKey = new ImmutableBytesWritable(
+					kval, 0, kval.length);
+			final Put put = new Put(rowKey.copyBytes());
+
+			int datIndex = 1;
+
+			for (int i = 0; i < columnsLength; i++) {
+				final Column col = columns[i];
+				try {
+					String v = value[datIndex];
+					if (v != null) {
+						put.add(col.getFamily(), col.getQualifier(),
+								col.parseString(v));
+					}
+				} catch (ClassCastException excp) {
+					// bad value detected
+					context.getCounter(ERROR.BAD_TYPE).increment(1);
+					// we only write out the error message once
+					if (errorLogs++ < logLimit) {
+						excp.printStackTrace();
+					}
+
+				} catch (Exception excp) {
+					// bad value detected
+					context.getCounter(ERROR.BAD_VALUE).increment(1);
+					// we only write out the error message once
+					if (errorLogs++ < logLimit) {
+						excp.printStackTrace();
+					}
+
+				}
+				datIndex++;
+			}
+
+			context.write(rowKey, put);
+		/*
 		final int size = value.size();
 
 		// key is not part of the columns but in the line.
@@ -103,7 +155,8 @@ public class PigHBaseImportMapper extends
 			}
 
 			context.write(rowKey, put);
-
+*/
+		
 		}
 
 	}
