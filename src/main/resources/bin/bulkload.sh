@@ -61,6 +61,6 @@ done
 
 
 
-HADOOP_CLASSPATH="$CLASSPATH" hadoop jar $HOME/lib/hbase-0.90.4.jar completebulkload $DIR $TBL
+HADOOP_CLASSPATH="$CLASSPATH" hadoop jar $HOME/lib/hbase-0.92.1-cdh4.1.0.jar completebulkload $DIR $TBL
 #exec "$JAVA" -XX:+DisableExplicitGC $JAVA_HEAP $JAVA_OPTS -classpath "$CLASSPATH" $CLASS $@
 

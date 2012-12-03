@@ -74,7 +74,6 @@ public class HBaseImportMapper extends
 			for (int i = 0; i < columnsLength; i++) {
 				final Column col = columns[i];
 				try {
-					final String val = split[splitIndex];
 					put.add(col.getFamily(), col.getQualifier(),
 							col.parseString(split[splitIndex]));
 				} catch (NumberFormatException excp) {
@@ -109,6 +108,7 @@ public class HBaseImportMapper extends
 
 	}
 
+	@SuppressWarnings("rawtypes")
 	@Override
 	protected void setup(org.apache.hadoop.mapreduce.Mapper.Context context)
 			throws IOException, InterruptedException {
