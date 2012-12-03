@@ -157,6 +157,12 @@ public class HBaseImport {
 			return type.parser.parseObject(obj);
 		}
 
+		@Override
+		public String toString() {
+			return "Column [family=" + Bytes.toString(family) + ", qualifier="
+					+ Bytes.toString(qualifier) + ", type=" + type + "]";
+		}
+
 	}
 
 	public static interface TypeParser {
