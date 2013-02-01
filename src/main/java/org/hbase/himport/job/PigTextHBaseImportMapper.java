@@ -57,7 +57,7 @@ public class PigTextHBaseImportMapper extends
 			org.apache.hadoop.mapreduce.Mapper.Context context)
 			throws IOException, InterruptedException {
 
-		final String[] value = StringUtils.split(txt.toString(), '\t');
+		final String[] value = StringUtils.splitPreserveAllTokens(txt.toString(), '\t');
 
 		final int size = value.length;
 
